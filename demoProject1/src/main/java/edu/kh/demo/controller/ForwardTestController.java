@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 // @Controller 어노테이션
 // 1) Controller 임을 명시
 // 2) 클래스 작성된 내용대로 구현 
-//		-> 스프링이 객체 생성 == Bean 등록 / Bean 생성
+//		-> 스프링이 ForwardTestController 객체 생성 == Bean 등록 / Bean 생성
 @Controller
 public class ForwardTestController {
 	// 기존 Servlet 
@@ -64,7 +64,7 @@ public class ForwardTestController {
 	// String Boot Controller 에서 
 	// 특수한 경우를 제외하고
 	// 매핑 주소 제일 앞에 '/' 를 적지 않는다!!!
-	@RequestMapping("forward")
+	@RequestMapping("forward") 	 // /forward 요청 매핑 (GET/POST 가리지 않음)
 	public String forwardTest() {
 		
 		System.out.println("/forward 매핑 됐는지 확인");
@@ -73,6 +73,9 @@ public class ForwardTestController {
 		 * 
 		 * - Thymeleaf 사용 시 접두사, 접미사가 제공됨
 		 * 
+		 * 
+		 *   classpath : buildpath 보면 3개의 폴더가 있는데 그게 classpath 
+		 *   						 그 중 templates 폴더가 존재하는 경로를 찾는 것
 		 * - 접두사(prefix) : classpath:/templates/
 		 * - 접미사(suffix) : .html
 		 * 

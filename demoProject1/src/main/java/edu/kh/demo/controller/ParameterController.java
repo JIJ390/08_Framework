@@ -7,14 +7,14 @@ import java.util.Map;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import edu.kh.demo.dto.Member;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 // Parameter : 매개 변수(메서드 수행 시 전달 받은 값
@@ -64,7 +64,7 @@ public class ParameterController {
 		// ArgumentResolver (전달 인자 해결사)
 		// -> Controller 메서드에 작성된 
 		//    매개 변수 타입에 맞는 객체가 존재하면 그대로 바인딩
-		//    (아래 링크 목록 중)없으면 생성해서 바인딩(빈 객체 EX. String aaa 등 목록에 없는)
+		//    없으면 생성해서 바인딩
   	// https://docs.spring.io/spring-framework/reference/web/webflux/controller/ann-methods/arguments.html
 		
 		String inputName = req.getParameter("inputName");
@@ -174,9 +174,102 @@ public class ParameterController {
 		return "param/result3";	// forward
 	}
 
+
+	// 4. @RequestParam 속성 확인 하기
+	@GetMapping("test4")
+	public String paramTest4(
+			@RequestParam(value="inputId", required = true)  String id,	// 빈 칸이 넘어와서 오류 발생하지 않음
+			@RequestParam(name ="inputPw", required = true)  String pw, // 
+			@RequestParam(value="saveId",  required = false, defaultValue = "X") String save
+//			@RequestParam("saveId")  String save
+//			There was an unexpected error (type=Bad Request, status=400).
+//			Required parameter 'saveId' is not present.
+			) {
+		
+		/* type="text" 관련 input 태그는 
+		 * 값을  작성하지 않은 경우 "빈 칸("")" 이 제출된다
+		 * -> 제출되는 값이 존재!!! @RequestPara() 에 아무 속성을 적지 않아도 오류 발생 X (400 error 발생 X)
+		 * 
+		 * * @RequestParam 의 name 속성과 value 는 같은 속성!!
+		 * 
+		 * * required : 필수
+		 *   -> 기본값 : true
+		 *   -> true 가 설정된 경우 == 꼭 제출되어야 하는 파라미터
+		 *   --> 만약 제출되지 않을 경우
+		 *       HTTP 상태코드 400 -> 400 Bad Request 에러 발생
+		 *       
+		 * @ checkbox, radio : 체크되지 않으면 제출 X -> 400 에러
+		 * 
+		 * @ 직접 쿼리스트링을 작성 : key = value 가 누락된 경우 -> 400 에러
+		 * 
+		 * * required = false 일 때, 값이 제출되지 않으면 -> null
+		 * 
+		 * * defaultValue : 
+		 *   - required = false 이면서, 값이 제출되지 않았을 경우
+		 *     매개변수 대입할 값 지정
+		 */
+		
+		log.debug("inputId : {}", id);
+		log.debug("inputPw : {}", pw);
+		log.debug("saveId  : {}", save);
+		
+		
+		/* Spring 에서 redirect 하는 방법 */
+		// -> 요청 주소 앞에 redirect: 붙이기
+		return "redirect:/param/main";
+//		return "redirect:main";
+	}
 	
 	
+	/* 5. @ModelAttribute 를 이용한 파라미터 얻어오기 */
 	
+	// @ModelAttribute
+	// - DTO(또는 VO)와 같이 사용하는 어노테이션
+	
+	// - 전달 받은 파라미터의 name 속성 값이
+	//   같이 사용되는 DTO의 필드명과 같다면
+	//   자동으로 setter를 호출해서 필드에 값을 세팅
+	
+	// *** @ModelAttribute 사용 시 주의사항 ***
+	// - DTO에 기본 생성자가 필수로 존재해야 한다!
+	// - DTO에 setter가 필수로 존재해야 한다!
+	
+	// *** @ModelAttribute 어노테이션은 생략이 가능하다! ***
+	
+	// *** @ModelAttribute를 이용해 값이 필드에 세팅된 객체를
+	//		"커맨드 객체" 라고 한다 ***
+	
+	// 많은 양의 파라미터를 하나의 DTO 로 한 번에 저장할 수 있어
+	// 굉장히 편함!!!
+	
+	@PostMapping("test5")
+	public String postMethodName(
+			@RequestParam("memberId")   String memberId, 
+			@RequestParam("memberPw")   String memberPw, 
+			@RequestParam("memberName") String memberName, 
+			@RequestParam("memberAge")  int memberAge,
+			// Spring 구버전에서는 @RequestParam("memberAge") 의 key 값과 변수명이 같으면 생략 가능
+			// 신버전에서는 기능 사라짐
+			// 하지만 이클립스에는 그 잔재가 남아있어 생략하라는 추천이 남아있음
+			
+			/* @ModelAttribute */Member member2
+			) {
+		
+		// Member 객체를 생성해서 
+		// 전달 받은 값 세팅
+		
+		Member member1 = new Member();
+		
+		member1.setMemberId(memberId);
+		member1.setMemberPw(memberPw);
+		member1.setMemberName(memberName);
+		member1.setMemberAge(memberAge);
+		
+		log.debug("member1 : {}", member1);	// 9줄로 만든 객체
+		log.debug("member2 : {}", member2); // Spring 이 만든 커맨드 객체
+		
+		return "redirect:/param/main";
+	}
 	
 }
 
