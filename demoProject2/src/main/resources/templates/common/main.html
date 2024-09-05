@@ -28,9 +28,28 @@
         <button>제출하기</button>
       </form>
     </li>
+
     <li>
       <a href="/example/ex3">타임리프 예제 3</a>
     </li>
+
+    <li>
+      <a href="/example/ex4">타임리프 예제 4(조건문)</a>
+    </li>
+
+    <li>
+      <a href="/example/ex5">타임리프 예제 5</a>
+    </li>
+
   </ol>
+  <h2>조각 테스트</h2>
+  <!-- th:insert == 요소 내부에 조각 삽입 -->
+  <div class="ddd" th:insert= "~{fragments/temp :: menu}"></div>
+  <hr>
+
+
+  <!-- footer.html 파일을 해당 위치에 출력 -->
+  <th:block th:replace= "~{fragments/footer}"></th:block>
+
 </body>
 </html>
