@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Todo List</title>
+  <style>
+    thead {
+      background-color: #3f3cff;
+      color: white;
+      padding: 5px;
+    }
+    tbody tr:nth-child(2n-1) {
+      background-color: #e4deff;
+    }
+
+    table tr> * {
+      text-align: center;
+      padding: 5px;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Todo List</h1>
+
+  <h3>
+    전체 Todo 개수 : <th:block th:text="${#lists.size(todoList)}"></th:block>
+    /
+    완료된 Todo 개수 : [[${completeCount}]]
+  </h3>
+
+
+  <table id="todoList" border="1" style="border-collapse: collapse;">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>제목</th>
+        <th>완료 여부</th>
+        <th>작성일</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <th:block th:each= "todo:${todoList}" th:object="${todo}">
+        <tr>
+          <th th:text="*{todoNo}"></th>
+          <td>
+            <a th:href="@{/todo/detail/{todoNo}(todoNo=*{todoNo})}" 
+               th:text="*{todoTitle}"></a>
+          </td>
+          <th th:text="*{todoComplete}"></th>
+          <td th:text="*{regDate}"></td>
+        </tr>
+      </th:block>
+    </tbody>
+
+  </table>
+  
+</body>
+</html>

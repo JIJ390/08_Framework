@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>사용자 추가 페이지</title>
+</head>
+<body>
+  <h1>사용자 추가 페이지</h1>
+
+  <form action="/user/insert" method="POST">
+    <div>
+      ID : <input type="text" name="userId" required>
+    </div>
+    <div>
+      PW : <input type="password" name="userPw" required>
+    </div>
+    <div>
+      NAME : <input type="text" name="userName" required>
+    </div>
+
+    <button>제출</button>
+    <button type="button" id="goToList">목록으로JS</button>
+    <a href="/user/selectAll">
+      <button type="button">목록으로</button>
+    </a>
+  </form>
+
+  <script>
+    document.querySelector("#goToList").addEventListener("click", () => location.href="/user/selectAll");
+  </script>
+
+  <!-- message 출력하는 script 조각 추가 -->
+  <th:block th:replace= "~{user/selectAll :: messageAlert}"></th:block>
+</body>
+</html>
