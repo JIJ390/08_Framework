@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>할 일 수정</title>
+</head>
+<body>
+  <h4>할 일 수정</h4>
+
+  <form action="/todo/update" method="POST" th:object="${todo}">
+    <div>
+      제목 : <input type="text" name="todoTitle" th:value="*{todoTitle}">
+    </div>
+    <div>
+      <textarea name="todoDetail" 
+        rows="3" cols="50" placeholder="상세 내용" th:text="*{todoDetail}">
+      </textarea>
+      <!-- textarea th:text 로 작성해야 보임 -->
+      
+    </div>
+
+    <input type="hidden" name="todoNo" th:value="*{todoNo}">
+
+    <button>수정</button>
+  </form>
+
+  <th:block th:replace="common/footer"></th:block>
+  
+</body>
+</html>

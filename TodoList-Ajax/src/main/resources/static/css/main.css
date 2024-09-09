@@ -1,0 +1,13 @@
+thead {
+  background-color: #3f3cff;
+  color: white;
+  padding: 5px;
+}
+tbody tr:nth-child(2n-1) {
+  background-color: #e4deff;
+}
+
+table tr> * {
+  text-align: center;
+  padding: 5px;
+}

@@ -49,6 +49,12 @@ public class TodoListServiceImpl implements TodoListService{
 	}
 	
 	@Override
+	public String searchTitle(int todoNo) {
+		// TODO Auto-generated method stub
+		return mapper.searchTitle(todoNo);
+	}
+	
+	@Override
 	public Todo detailTodo(int todoNo) {
 		return mapper.detailTodo(todoNo);
 	}

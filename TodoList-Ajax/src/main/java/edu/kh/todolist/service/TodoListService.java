@@ -48,4 +48,7 @@ public interface TodoListService {
 	int deleteTodo(int todoNo);
 
 
+	String searchTitle(int todoNo);
+
+
 }

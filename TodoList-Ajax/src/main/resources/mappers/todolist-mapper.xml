@@ -38,6 +38,15 @@
 	</insert>
 	
 	
+	<select id="searchTitle"
+			parameterType="_int"
+			resultType="string">
+		SELECT TODO_TITLE
+		FROM TB_TODO2
+		WHERE TODO_NO = #{todoNo}
+	</select>
+	
+	
 	<!-- 할 일 상세 조회 -->
 	<select id="detailTodo"
 			parameterType="_int"

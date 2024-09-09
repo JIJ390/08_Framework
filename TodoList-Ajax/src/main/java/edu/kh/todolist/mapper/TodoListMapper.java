@@ -27,6 +27,13 @@ public interface TodoListMapper {
 	 * @return result
 	 */
 	int addTodo(Todo todo);
+	
+	/**
+	 * 할 일 제목 찾기
+	 * @param todoNo
+	 * @return
+	 */
+	String searchTitle(int todoNo);
 
 	/**
 	 * 할 일 상세 조회
@@ -55,6 +62,11 @@ public interface TodoListMapper {
 	 * @return result
 	 */
 	int deleteTodo(int todoNo);
+
+
+	
+	
+
 	
 	
 

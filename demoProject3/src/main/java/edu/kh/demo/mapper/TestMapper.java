@@ -29,7 +29,7 @@ public interface TestMapper {
 
 	/**
 	 * 사용자 전체 조회
-	 * mapper.xml 파일에서 resultType 이 DTO 로 설정되엉 있는데
+	 * mapper.xml 파일에서 resultType 이 DTO 로 설정되어 있는데
 	 * 반환형은 List<UserDTO> 형태라서 다르다고 생각할 수 있지만
 	 * 한 행이 조회될 때마다 List 에 DTO 가 add(추가) 되는 것이다!
 	 * @return
