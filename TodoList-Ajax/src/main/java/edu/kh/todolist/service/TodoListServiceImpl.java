@@ -76,4 +76,22 @@ public class TodoListServiceImpl implements TodoListService{
 		// TODO Auto-generated method stub
 		return mapper.deleteTodo(todoNo);
 	}
+	
+	@Override
+	public int getTotalCount() {
+		// TODO Auto-generated method stub
+		return mapper.getTotalCount();
+	}
+	
+	@Override
+	public int getCompleteCount() {
+		// TODO Auto-generated method stub
+		return mapper.selectCompleteCount();
+	}
+	
+	@Override
+	public List<Todo> getTodoList() {
+		// TODO Auto-generated method stub
+		return mapper.selectTodoList();
+	}
 }

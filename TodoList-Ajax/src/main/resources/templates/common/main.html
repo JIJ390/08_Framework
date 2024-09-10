@@ -9,10 +9,10 @@
 <body>
   <h1>Todo List</h1>
 
-  <h3>
-    전체 Todo 개수 : <th:block th:text="${#lists.size(todoList)}"></th:block>
-    /
-    완료된 Todo 개수 : [[${completeCount}]]
+  <h3>          <!-- <th:block th:text="${#lists.size(todoList)}"></th:block> -->
+    전체 Todo 개수 : <span id="totalCount" th:text="${#lists.size(todoList)}"></span>
+    /             <!-- [[${completeCount}]] -->
+    완료된 Todo 개수 : <span id="completeCount">[[${completeCount}]]</span>
   </h3>
 
   
@@ -42,11 +42,11 @@
       </tr>
     </thead>
 
-    <tbody>
+    <tbody id="tbody">
       <th:block th:each= "todo, todoStat:${todoList}" th:object="${todo}">
         <tr>
-          <th th:text="${todoStat.count}"></th>
-          <!-- <th th:text="*{todoNo}"></th> -->
+          <!-- <th th:text="${todoStat.count}"></th> -->
+          <th th:text="*{todoNo}"></th>
           <td>
             <a th:href="@{/todo/detail/{todoNo}(todoNo=*{todoNo})}" 
                th:text="*{todoTitle}"></a>
@@ -59,17 +59,85 @@
 
   </table>
 
+  <!-- 팝업 -->
+
+    <!-- 
+    할 일 상세 조회 시 출력되는 화면 
+    popup layer : 현재 페이지 위에 새로운 레이어를 띄우는 것
+  -->
+  <!-- 처음에 숨겨놓기 -->
+  <div id="popupLayer" class="popup-hidden">
+
+    <div class="popup-row">
+      번호 : <span id="popupTodoNo"></span>
+      | 
+      제목 : <span id="popupTodoTitle"></span>
+
+      <span id="popupClose">&times;</span>
+    </div>
+
+    <div class="popup-row">
+      완료 여부 : <span id="popupComplete"></span>
+      <br>
+      등록일 : <span id="popupRegDate"></span>
+    </div>
+
+    <div class="popup-row">
+      [내용]
+      <div id="popupTodoContent"></div>
+    </div>
+
+    <div class="btn-container">
+      <button id="changeComplete">완료 여부 변경</button>
+
+      <button id="updateView">수정</button>
+
+      <button id="deleteBtn">삭제</button>
+    </div>
+  </div>
+
+  <!-- 수정 팝업 레이어 (처음에 숨겨져 있음)-->
+  <div id="updateLayer" class="popup-hidden">
+    <div class="popup-row">
+      제목 : <input type="text" id="updateTitle">
+    </div>
+
+    <div class="popup-row">
+      <textarea id="updateContent" cols="50" rows="5"></textarea>
+    </div>
+
+    <div class="btn-container">
+      <button id="updateBtn">수정</button>      
+      <button id="updateCancel">취소</button>      
+    </div>
+  </div>
+
+
+
+
+
+
   <hr>
-  <h3>ajax 기초 연습 - todoNo 일치하는 할 일의 제목 얻어오기</h3>
+  <h3>ajax 기초 연습 - todoNo(단일값) 일치하는 할 일의 제목(단일값) 얻어오기</h3>
 
   <input type="number" id="inputTodoNo">
   <button id="searchBtn">검색</button>
 
+  <hr>
+  <h3>todoNo(단일값) 일치하는 할 일의 모든 정보(다수 값) 얻어오기</h3>
+
+  <input type="number" id="inputTodoNo2">
+  <button id="searchBtn2">검색</button>
+  <ul id="result2">
+  </ul>
+  
 
 
   <!-- templates 폴더 기준 경로 footer 조각 추가-->
   <th:block th:replace= "~{common/footer}"></th:block>
   
   <script src="/js/main.js"></script>
+
+  <script src="/js/practice.js"></script>
 </body>
 </html>
