@@ -1,6 +1,7 @@
 package edu.kh.project.myPage.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.project.member.dto.Member;
@@ -21,5 +22,33 @@ public interface MyPageMapper {
 
 	
 	int checkNickname(String input);
+
+
+	int changePw(
+			@Param("memberNo") int memberNo, 
+			@Param("encPw") String encPw);
+
+
+	
+	/* 마이바티스 Mapper 인터페이스 메서드 호출 시 
+	 * 별도의 어노테이션이 없다면
+	 * 첫번째 매개변수만
+	 * mapper.xml 파일에 전달되는 parameter 로 인식된다!!
+	 * 
+	 * [해결 방법]
+	 * 1. DTO, 컬렉션(map) 을 이용해 묶어서 전달
+	 * 2. @Param 어노테이션을 이용해 파라미터로 인식
+	 * 
+	 * @Param("key") 자료형 변수명
+	 * - SQL 중 #{key} 자리에 들어갈 값을 지정
+	 */
+	
+	/**
+	 * 회원 탈퇴
+	 * @param memberNo
+	 * @return
+	 */
+	int secession(int memberNo);
+	
 
 }

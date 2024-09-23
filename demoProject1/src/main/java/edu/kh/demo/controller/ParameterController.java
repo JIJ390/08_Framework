@@ -37,7 +37,7 @@ public class ParameterController {
 		// * View Resolver(뷰 해결사) 가
 		//   접두사, 접미사를 붙여서 자동으로 forward 를 진행
 		// thymeleaf 의 접두사 : Classpath:/templates/
-		// thymeleaf 의 접두사 : .html
+		// thymeleaf 의 접미사 : .html
 		
 		return "param/param-main";
 	}
