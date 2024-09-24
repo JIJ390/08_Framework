@@ -97,7 +97,7 @@ function getCompleteCount() {
    * 두 번째 then
       - 비동기 요청으로 얻어온 값을 이용해서 수행될 JS 코드 작성하는 구문
   */
-  fetch("/todo/completeCount") // 동기 요청해서 결과 데이터 응답 받기
+  fetch("/todo/completeCount") // 비동기 요청해서 결과 데이터 응답 받기
   .then(response => {
     if (response.ok){ // 비동기 통신 성공 시 (HTTP 상태 코드 200)
       return response.text();   // response의 응답 결과를 text 형태로 변환해서 반환!
