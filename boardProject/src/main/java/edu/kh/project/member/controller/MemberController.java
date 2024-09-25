@@ -44,7 +44,7 @@ public class MemberController {
 	public String login(
 			@RequestParam("memberEmail") String memberEmail,
 			@RequestParam("memberPw")    String memberPw,
-			@RequestParam(name="saveEmail", required=false) String saveEmail,	// null 이 들어오도 오류 안나도록
+			@RequestParam(name="saveEmail", required=false) String saveEmail,	// null 이 들어와도 오류 안나도록
 			RedirectAttributes ra,
 			Model model,
 			HttpServletResponse resp) {

@@ -241,6 +241,11 @@ form[name='myPageFrm']{position: relative;}
   transition-duration: 0.1s;
 }
 
+#findAddressBtn:active {
+  background-color: #ddd;
+  color: black;
+}
+
 .green {
   color: green;
 }

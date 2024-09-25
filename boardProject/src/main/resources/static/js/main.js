@@ -48,3 +48,71 @@ document.addEventListener("DOMContentLoaded", () => {
   // 이메일 저장 체크박스를 체크 상태로 바꾸기
   checkbox.checked = true;
 })
+
+
+// ------------------------------------------------------------------------
+/* 메인 페이지 회원 목록 비동기 조회 함수 */
+const selectMemberList = () => {
+
+  // 1) 비동기로 모든 회원의
+  // 회원 번호, 이메일, 탈퇴상태 조회하기
+
+  fetch("/selectMemberList")
+  .then(response => {
+    // 응답 성공 시 JSON 형태의 응답 데이터를 JS 객체로 변경
+    if (response.ok) return response.json();
+    throw new Error("조회 오류");
+  })
+  .then(list => {
+    // console.log(list);
+
+    // 1) #memberList 기존 내용 없애기
+    memberList.innerHTML = "";
+
+    // 2) 조회 결과인 list 를 반복 접근해서
+    //    #memberList 에 조회된 내용으로 tr, td, th 만들어 넣기
+
+    //  for of
+    //  for in
+    //  forEach
+    list.forEach(member => {
+      // 매개변수 member == 조회된 list 에서 하나씩 꺼낸 요소
+      
+      // tr 요소 만들기
+      const tr = document.createElement("tr");
+      
+      // th 요소 만들어서 회원 정보 세팅
+      const th1 = document.createElement("th");
+      th1.innerText = member.memberNo;
+
+      const td2 = document.createElement("td");
+      td2.innerText = member.memberEmail;
+      
+      const th3 = document.createElement("th");
+      th3.innerText = member.memberDelFl;
+      
+      const th4 = document.createElement("th");
+      const loginBtn = document.createElement("button");
+      loginBtn.innerText = "로그인";
+      th4.append(loginBtn);
+
+      const th5 = document.createElement("th");
+      const initBtn = document.createElement("button");
+      initBtn.innerText = "비밀번호 초기화";
+      th5.append(initBtn);
+
+      const th6 = document.createElement("th");
+      const changeBtn = document.createElement("button");
+      changeBtn.innerText = "탈퇴 상태 변경";
+      th6.append(changeBtn);
+
+      tr.append(th1, td2, th3, th4, th5, th6);
+
+      memberList.append(tr);
+      
+    })
+
+  })
+  .catch(err => console.error(err));
+
+};

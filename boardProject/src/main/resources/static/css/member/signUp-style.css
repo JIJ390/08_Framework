@@ -92,3 +92,18 @@
 #signUpBtn:active{
   transform: scale(0.95);
 }
+
+
+
+/* 00000000000000000000000 */
+
+.signUp-input-area > button:hover {
+  background-color: #455ba8;
+  color: #ddd;
+  transition-duration: 0.1s;
+}
+
+.signUp-input-area > button:active {
+  background-color: #ddd;
+  color: black;
+}
