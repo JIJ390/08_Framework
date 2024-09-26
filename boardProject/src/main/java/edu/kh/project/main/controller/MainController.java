@@ -59,8 +59,8 @@ public class MainController {
 		
 		Member loginMember = service.directLogin(memberNo);
 		
-		// 로그인된 회우너 정보를 session 에 추가
-		
+		// @SessionAttributes({"loginMember"})
+		// 로그인된 회원 정보를 session 에 추가
 		model.addAttribute("loginMember", loginMember);
 		
 		return "redirect:/";
