@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.kh.project.member.dto.Member;
@@ -232,5 +233,48 @@ public class MyPageController {
 
 		
 		return "redirect:" + path;
+	}
+	
+	
+	@GetMapping("profile")
+	public String profile() {
+		return "myPage/myPage-profile";
+	}
+	
+	
+	/**
+	 * 로그인한 회원의 프로필 이미지 수정
+	 * @param profileImg  제출된 이미지
+	 * @param loginMember 로그인한 회원 정보
+	 * @param ra					리다이렉트 시 request scope 로 값 전달
+	 * @return
+	 */
+	@PostMapping("profile")
+	public String profile(
+			@RequestParam("profileImg") MultipartFile profileImg,
+			@SessionAttribute("loginMember") Member loginMember,
+			RedirectAttributes ra)	{
+		
+		// 1) 로그인한 회원의 회원 번호 얻어오기
+		int memberNo = loginMember.getMemberNo();
+		
+		// 2) 업로드된 이미지로 프로필 이미지 변경
+		String filePath = service.profile(profileImg, memberNo);
+		
+		// 3) 응답 처리
+		String message = null;
+		
+		message = "프로필 이미지가 변경되었습니다";
+			
+		// DB, Session 에 저장된 프로필 이미지 정보 동기화, 갱신
+		// loginMember가 주소를 참조하고 있기 때문(얕은 복사)
+		loginMember.setProfileImg(filePath);
+			
+		// if 문 필요 없어짐
+
+		
+		ra.addFlashAttribute("message", message);
+		
+		return "redirect:profile"; // /myPage/profile (GET)
 	}
 }

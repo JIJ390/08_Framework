@@ -49,6 +49,15 @@ public interface MyPageMapper {
 	 * @return
 	 */
 	int secession(int memberNo);
+
+
+	/**
+	 * 프로필 이미지 수정
+	 * @param url
+	 * @param memberNo
+	 * @return
+	 */
+	int profile(@Param("url") String url, @Param("memberNo") int memberNo);
 	
 
 }

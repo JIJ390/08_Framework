@@ -351,3 +351,140 @@ secession?.addEventListener("submit", e => {
     return;
   }
 });
+
+
+
+//-------------------------------------------------------------------------------------
+/* v프로필 이미지 미리보기, 삭제하기 */
+// 프로필 이미지 업로드 상태에 따라서 어떤 상태인지 구분하는 값
+// -1 : 프로필 이미지를 바꾼 적이 없음(초기 상태, defaultimg 아님!!!!!!!!!!!!)
+//  0 : 프로필 이미지 삭제 (X버튼 클릭)
+//  1 : 새 이미지 선택(업로드)
+let statusCheck = -1;
+
+
+let lastVaildFile = null; // 마지막으로 선택된 파일을 저장할 변수
+
+// 미리보기가 출력될 img 
+const profileImg = document.querySelector("#profileImg");
+
+// 프로필 이미지를 선택할 input
+const imageInput = document.querySelector("#imageInput");
+
+// 기본 이미지로 변경할 X(span)
+const deleteImage = document.querySelector("#deleteImage");
+
+if (imageInput != null) { // 프로필 변경 화면인 경우 (마이페이지 다른 항목에서는 호출되지 않도록)
+
+  /**미리 보기 함수!!!
+   * @param {*} file : input type="file" 에서 선택된 파일
+   */
+  const updatePreview = (file) => {
+
+    lastVaildFile = file; // 선택된 파일을 lastVaildFile에 복사
+
+    // JS 에서 제공하는 파일을 읽어오는 객체
+    const reader = new FileReader();
+
+    // file 을 읽어 오는데 
+    // DataURL 형식으로 읽어옴
+    // DataURL : 파일 전체 데이터가 브라우저가 해석할 수 있는 
+    //           긴 주소형태 문자열로 변환
+    reader.readAsDataURL(file);
+
+    // 선택된 파일이 다 인식 되었을때
+    reader.addEventListener("load", e => {
+      profileImg.src = e.target.result;
+      // e.target.result == 파일이 저장된 주소형태 문자열 (reader == e.target?)
+
+      statusCheck = 1; // 새 파일이 선택도니 상태 (DB에 올라가기 전)
+    })
+  }
+
+
+  /* input type="file" 태그가 선택한 값이 변한 경우 수행
+   */
+  imageInput.addEventListener("change", e => {
+    // 선택된 파일 1 개를 얻어옴
+    const file = e.target.files[0];
+
+    // 선택된 파일이 없을 경우 (취소 눌렀을 때)
+    if (file === undefined) {
+      /* 이전 선택한 파일 유지하는 코드 */
+      // -> 이전 선택한 파일을 저장할 전역변수
+
+      // 이전에 선택한 파일이 없는 경우
+      // 마이페이지 들어와서 프로필을 바꾸지 않은 경우 + 그 상태에서 취소 눌렀을때
+      if (lastVaildFile === null) return;
+
+      // 이전에 선택한 파일이 있을 경우
+
+      // 데이터 전달
+      const dataTransfer = new DataTransfer();
+      
+      // DataTransfer가 가지고 있는 files 필드에 
+      // lastVaildFile 추가 
+      dataTransfer.items.add(lastVaildFile);
+      // -> lastVaildFile 을 요소로 포함한 FileList 생성
+      // -> lastVaildFile 을 요소로 포함한 FileList 생성
+
+      // value 에 파일을 대입할 수 없어서 이런 식으로 구현
+      imageInput.files = dataTransfer.files;
+      
+      // 이전 선택된 파일로 미리보기 되돌리기
+      updatePreview(lastVaildFile); 
+
+      return;
+    }
+
+    // 선택된 파일이 있을 경우
+    updatePreview(file); // 미리보기 함수 호출
+  })
+
+
+  /* X 버튼 클릭 시 기본 이미지로 변환 */
+  deleteImage.addEventListener("click", () => {
+    // 미리 보기를 기본 이미지로 변경
+    profileImg.src = userDefaultImage;
+
+    // input 태그와 
+    // 마지막 선택된 파일을 저장하는 lastValidFile 에
+    // 저장된 값을 모두 삭제
+    imageInput.value = '';
+    lastVaildFile = null;
+
+    statusCheck = 0;
+  })
+
+}
+
+
+const profileForm = document.querySelector("#profile")
+
+// 해당 js 를 모든 마이페이지 항목이 사용하므로
+// 안전 탐색 연산자 사용
+profileForm?.addEventListener("submit", e => {
+  let flag = true; // true 인 경우 제출 불가능
+
+  // 미변경(초기) 시 제출 불가
+  if (statusCheck === -1) flag = true;
+  
+  // 기존 프로필 이미지 X -> 새 이미지 선택
+  if (loginMemberProfileImg === null && statusCheck === 1)  
+     flag = false;
+
+  // 기존 프로필 이미지 존재 -> X 버튼 눌러서 삭제
+  if (loginMemberProfileImg !== null && statusCheck === 0)  
+    flag = false;
+
+  // 기존 프로필 이미지 존재 -> 새 이미지 선택
+  if (loginMemberProfileImg !== null && statusCheck === 1)  
+    flag = false;
+
+  // 기존 프로필 이미지 없을때 X 누른 경우는 제출 안됨
+
+  if (flag === true) {
+    e.preventDefault();
+    alert("이미지 변경 후 클릭하세요");
+  }
+})
