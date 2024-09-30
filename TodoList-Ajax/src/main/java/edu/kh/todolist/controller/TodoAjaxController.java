@@ -154,7 +154,7 @@ public class TodoAjaxController {
 		
 		/* 반환형 Todo(String 이 아닌 Object) 인 경우*/
 		// -> Java 객체가 반환되면 JS 에서 쓸 수 없는 걸
-		//    당연히 Spring 이 알 고 있으니까
+		//    당연히 Spring 이 알고 있으니까
 		//    이를 자동으로
 		//    HttpMessageConverter 객체가 변환해준다!
 		
