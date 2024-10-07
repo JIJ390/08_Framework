@@ -91,7 +91,7 @@
 				#{img.imgPath}, 
 				#{img.imgOriginalName},
 				#{img.imgRename},
-				#{img.imgOrder},
+				#{img.imageOrder},
 				#{img.boardNo}
 			FROM DUAL
   		

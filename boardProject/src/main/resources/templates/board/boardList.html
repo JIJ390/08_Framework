@@ -59,6 +59,9 @@
                   <td th:text="*{rnum}">게시글 번호</td>
                   <td>
                     <!-- 썸네일 추가 예정 -->
+                    <img th:if="*{thumbnail}"
+                         th:src="*{thumbnail}" 
+                         class="list-thumbnail">
     
                     <a th:href="@{/board/{boardCode}/{boardNo} (boardCode=1, boardNo=*{boardNo})}" 
                        th:text="*{boardTitle}">게시글 제목</a>

@@ -43,7 +43,7 @@ public class EditBoardServiceImpl implements EditBoardService{
 		if (result == 0) return 0;
 		
 		/* 삽입된 게시글 번호 */
-		int boardNo = inputBoard.getBoardCode();
+		int boardNo = inputBoard.getBoardNo();
 		
 		// -----------------------------------------------------
 		
@@ -71,7 +71,7 @@ public class EditBoardServiceImpl implements EditBoardService{
 										 .imgRename(rename)
 										 .imgPath(webPath)
 										 .boardNo(boardNo)
-										 .imgOrder(i)									// 제출된 칸의 순서, 여기까지 5 개는 DB 에 삽입되는 정보
+										 .imageOrder(i)									// 제출된 칸의 순서, 여기까지 5 개는 DB 에 삽입되는 정보
 										 .uploadFile(images.get(i))		// MultipartFile 실제 업로드된 이미지 데이터
 										 .build();
 			

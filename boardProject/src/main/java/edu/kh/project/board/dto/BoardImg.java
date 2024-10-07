@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
+
 @Getter
 @Setter
 @ToString
@@ -16,13 +18,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @Builder
 public class BoardImg {
-//	BOARD_IMG 컬러뫄 매핑되는 필드 
+//	BOARD_IMG 컬럼과 매핑되는 필드 
 	
 	private int imgNo;
 	private String imgPath;
 	private String imgOriginalName;
 	private String imgRename;
-	private int imgOrder;
+	private int imageOrder;
+
+	// DB 잘못만듬 INSERT 할 때는 문제 X
+	// SELECT 해서 DTO 에 담을 시 문제 발생
+	
 	private int boardNo;
 	
 	// 게시글 이미지 삽입 수정 시 사용할 필드

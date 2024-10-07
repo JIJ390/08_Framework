@@ -36,7 +36,7 @@ public class EditBoardController {
 	
 	/**
 	 * 게시글 작성화면 전환
-	 * {boardCode:[0-9]+} : boardCode 는 숫자 1 글자 이상만 가능
+	 * {boardCode:[0-9]+} : boardCode 는 1 글자 이상 숫자만 가능
 	 * @param boardCode
 	 * @return
 	 */

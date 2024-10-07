@@ -363,7 +363,7 @@ secession?.addEventListener("submit", e => {
 let statusCheck = -1;
 
 
-let lastVaildFile = null; // 마지막으로 선택된 파일을 저장할 변수
+let lastValidFile = null; // 마지막으로 선택된 파일을 저장할 변수
 
 // 미리보기가 출력될 img 
 const profileImg = document.querySelector("#profileImg");
@@ -381,7 +381,7 @@ if (imageInput != null) { // 프로필 변경 화면인 경우 (마이페이지 
    */
   const updatePreview = (file) => {
 
-    lastVaildFile = file; // 선택된 파일을 lastVaildFile에 복사
+    lastValidFile = file; // 선택된 파일을 lastValidFile에 복사
 
     // JS 에서 제공하는 파일을 읽어오는 객체
     const reader = new FileReader();
@@ -397,7 +397,7 @@ if (imageInput != null) { // 프로필 변경 화면인 경우 (마이페이지 
       profileImg.src = e.target.result;
       // e.target.result == 파일이 저장된 주소형태 문자열 (reader == e.target?)
 
-      statusCheck = 1; // 새 파일이 선택도니 상태 (DB에 올라가기 전)
+      statusCheck = 1; // 새 파일이 선택된 상태 (DB에 올라가기 전)
     })
   }
 
@@ -415,7 +415,7 @@ if (imageInput != null) { // 프로필 변경 화면인 경우 (마이페이지 
 
       // 이전에 선택한 파일이 없는 경우
       // 마이페이지 들어와서 프로필을 바꾸지 않은 경우 + 그 상태에서 취소 눌렀을때
-      if (lastVaildFile === null) return;
+      if (lastValidFile === null) return;
 
       // 이전에 선택한 파일이 있을 경우
 
@@ -423,16 +423,16 @@ if (imageInput != null) { // 프로필 변경 화면인 경우 (마이페이지 
       const dataTransfer = new DataTransfer();
       
       // DataTransfer가 가지고 있는 files 필드에 
-      // lastVaildFile 추가 
-      dataTransfer.items.add(lastVaildFile);
-      // -> lastVaildFile 을 요소로 포함한 FileList 생성
-      // -> lastVaildFile 을 요소로 포함한 FileList 생성
+      // lastValidFile 추가 
+      dataTransfer.items.add(lastValidFile);
+      // -> lastValidFile 을 요소로 포함한 FileList 생성
+      // -> lastValidFile 을 요소로 포함한 FileList 생성
 
       // value 에 파일을 대입할 수 없어서 이런 식으로 구현
       imageInput.files = dataTransfer.files;
       
       // 이전 선택된 파일로 미리보기 되돌리기
-      updatePreview(lastVaildFile); 
+      updatePreview(lastValidFile); 
 
       return;
     }
@@ -451,7 +451,7 @@ if (imageInput != null) { // 프로필 변경 화면인 경우 (마이페이지 
     // 마지막 선택된 파일을 저장하는 lastValidFile 에
     // 저장된 값을 모두 삭제
     imageInput.value = '';
-    lastVaildFile = null;
+    lastValidFile = null;
 
     statusCheck = 0;
   })
