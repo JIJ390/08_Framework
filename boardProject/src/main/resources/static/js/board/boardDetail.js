@@ -45,3 +45,76 @@ boardLike.addEventListener("click", e => {
   .catch(err => console.error(err));
 
 })
+
+
+// -------------------------------------------------------------------------------
+
+/* 삭제 버튼 클릭 시
+   - 삭제 버튼 클릭 시 "정말 삭제 하시겠습니까?" confirm()
+   - /editBoard/delete, POST 방식, 동기식 요청
+
+   -> form 태그 생성(동기식 POST) + 게시글 번호가 세팅된 input
+   -> body 태그 제일 아래 추가해서 submit()
+
+   - 서버(java)에서 로그인한 회원의 회원 번호를 얻어와
+     로그인한 회원이 작성한 글이 맞는지 SQL 에서 검사
+*/
+
+const deleteBtn = document.querySelector("#deleteBtn");
+
+deleteBtn?.addEventListener("click", () => {
+
+  if (confirm("정말 삭제 하시겠습니까?") == false) return;
+
+  const url = "/editBoard/delete";    // 요청 주소
+  // 게시글 번호 == 전역 변수 boardNo
+
+  const form = document.createElement("form");
+  form.action = url;            // 요청 주소
+  form.method = "POST";         // 메소드 지정
+
+  // input 태그 생성
+  const input = document.createElement("input");
+  input.type  = "hidden";
+  input.name  = "boardNo";
+  input.value = boardNo;  
+
+  form.append(input); // form 자식으로 input 추가
+
+  // body 태그 자식으로 form 추가
+  document.querySelector("body").append(form);
+
+  form.submit(); // 제출
+  
+});
+
+
+//---------------------------------------------
+
+/* 수정 버튼 클릭 시
+  - /editBoard/{boardCode}/{boardNo}/update, POST, 동기식
+  -> form 태그 생성
+  -> body 태그 제일 아래 추가해서 submit()
+
+  - 서버(Java) 에서 로그인한 회원의 회원 번호를 얻어와
+    로그인한 회원이 작성한 글이 맞는지 SQL 에서 검사
+    
+    맞긍 경우 수정화면으로 전환
+*/
+
+const updateBtn = document.querySelector("#updateBtn");
+
+updateBtn?.addEventListener("click", () => {
+
+  const form = document.createElement("form");
+
+  // /editBoard/{boardCode}/{boardNo}/update}
+  form.action = location.pathname.replace("board", "editBoard") + "/updateView";            // 요청 주소
+  form.method = "POST";         // 메소드 지정
+
+
+  // body 태그 자식으로 form 추가
+  document.querySelector("body").append(form);
+
+  form.submit(); // 제출
+})
