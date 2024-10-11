@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import edu.kh.project.board.dto.Board;
+import edu.kh.project.board.dto.Comment;
 import edu.kh.project.board.dto.Pagination;
 import edu.kh.project.board.mapper.BoardMapper;
 import lombok.RequiredArgsConstructor;
@@ -147,4 +148,12 @@ public class BoardServiceImpl implements BoardService{
 		// TODO Auto-generated method stub
 		return mapper.selectBoardTypeList();
 	}
+	
+	
+	
+	@Override
+	public List<Comment> selectCommentList(int boardNo) {
+		return mapper.selectCommentList(boardNo);
+	}
+	
 }
