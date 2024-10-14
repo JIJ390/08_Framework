@@ -138,9 +138,10 @@
 
 
 
-
-      <!-- 검색창 -->
-      <form action="#" method="get" id="boardSearch">
+                      <!-- forward 한 곳에서 똑같이 쓸 수 있다! -->
+      <!-- 검색창 --> <!-- @PathVariable("boardCode") -->
+      <!-- action 주소는 목록 조회 주소와 똑같이 사용 -->
+      <form th:action="@{{boadCode}(boadCode=${boardCode})}" method="get" id="boardSearch">
 
         <select name="key" id="searchKey">
           <option value="t">제목</option>

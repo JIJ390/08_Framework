@@ -92,4 +92,21 @@ public interface BoardMapper {
 	 */
 	List<Comment> selectCommentList(int boardNo);
 
+	
+	/**
+	 * 검색 조건이 맞는 게시글 수 조회
+	 * @param paramMap
+	 * @return count
+	 */
+	int getSearchCount(Map<String, Object> paramMap);
+
+	
+	/**
+	 * 검색 목록 조회
+	 * @param boardCode
+	 * @param rowBounds
+	 * @return boardList
+	 */
+	List<Board> selectSearchList(Map<String, Object> paramMap, RowBounds rowBounds);
+
 }
