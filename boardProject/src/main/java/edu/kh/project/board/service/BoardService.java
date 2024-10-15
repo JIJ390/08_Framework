@@ -64,6 +64,14 @@ public interface BoardService {
 	 * @return map
 	 */
 	Map<String, Object> selectSearchList(int boardCode, int cp, Map<String, Object> paramMap);
+
+
+	/**
+	 * 현재 게시글이 포함된 목록의 페이지로 리다이렉트
+	 * @param paramMap
+	 * @return
+	 */
+	int getCurrentPage(Map<String, Object> paramMap);
 	
 	
 

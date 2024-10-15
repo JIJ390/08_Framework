@@ -118,3 +118,39 @@ updateBtn?.addEventListener("click", () => {
 
   form.submit(); // 제출
 })
+
+
+
+
+// -----------------------------------------------------
+
+/* 목록으로 버튼 클릭 시 */
+
+const goToListBtn = document.querySelector("#goToListBtn");
+
+goToListBtn.addEventListener("click", () => {
+
+
+  // 페이지당 게시글 수
+  const limit = 10;
+
+  let url = location.pathname + "/goToList?limit=" + limit;
+  // /board/{boardCode}/{boardNo}/goToList?limit=10
+  
+  // location.search : 쿼리 스트링 반환
+  // URLSearchParams 객체 : 쿼리스트링을 관리하는 객체
+  // - 쿼리스트링 생성, 기존 쿼리 스트링을 k:v 형태로 분할 관리
+  const params = new URLSearchParams(location.search);
+
+  // 쿼리스트링에 key 가 존재하는 경우 == 검색인 경우
+  if (params.get("key") !== null) {
+    // string template 백틱
+    url += `&key=${params.get("key")}&query=${params.get("query")}`
+  }
+
+  // 요청 주소 전달
+  location.href = url;
+  // /board/{boardCode}/{boardNo}/goToList?limit=10
+  // /board/{boardCode}/{boardNo}/goToList?limit=10&key=t&query=피카피카
+
+})
