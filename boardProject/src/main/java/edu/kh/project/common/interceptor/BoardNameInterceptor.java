@@ -41,6 +41,8 @@ public class BoardNameInterceptor implements HandlerInterceptor{
 		
 		String uri = request.getRequestURI();
 		
+		
+		
 		try {
 			String code = uri.split("/")[2];		// "", "editBoard", "1", "insert"
 			
