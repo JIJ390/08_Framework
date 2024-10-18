@@ -150,6 +150,12 @@
     
         // 로그인 되어있으면 true, 아니면 false
         const loginCheck = /*[[${session.loginMember != null}]]*/ false;
+                                            // 로그인 하지 않은 경우 안전탐색 연산자
+        const memberNickname = /*[[${session.loginMember?.memberNickname}]]*/ null;
+                                                    // 기본값
+
+        // 상세 조회한 게시글 정보                                           
+        const boardDetail = /*[[${board}]]*/ null;
         
       </script>
 

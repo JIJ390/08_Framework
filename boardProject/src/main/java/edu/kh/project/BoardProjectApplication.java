@@ -3,6 +3,7 @@ package edu.kh.project;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.stereotype.Controller;
 
 // @SpringBootApplication : spring 설정들 적용
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 
 //ComponentScan / Controller , service bean 찾아서 등록
 @SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
+@EnableScheduling
 public class BoardProjectApplication {
 
 	public static void main(String[] args) {

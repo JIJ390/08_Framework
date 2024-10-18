@@ -47,4 +47,24 @@ public class SseServiceImpl implements SseService{
 	public List<Notification> selectNotificationList(int memberNo) {
 		return mapper.selectNotificationList(memberNo);
 	}
+	
+	
+	// 로그인 회원의 읽지 않은 알림 개수 조회
+	@Override
+	public int notReadCheck(int memberNo) {
+		return mapper.notReadCheck(memberNo);
+	}
+	
+	
+	// 알림 삭제
+	@Override
+	public void deleteNotification(int notificationNo) {
+		mapper.deleteNotification(notificationNo);
+	}
+	
+	// 알림 읽음 여부 변경(N -> Y)
+	@Override
+	public void updateNotification(int notificationNo) {
+		mapper.updateNotification(notificationNo);
+	}
 }

@@ -33,6 +33,21 @@ boardLike.addEventListener("click", e => {
     if (result.check === 'insert') {
       boardLike.classList.add("fa-solid");
       boardLike.classList.remove("fa-regular");
+
+      const content
+        = `<strong>${memberNickname}</strong> 님이 <strong>${boardDetail.boardTitle}</strong> 게시글을 좋아합니다`;
+
+      // const url = `/board/ + ${boardDetail.boardCode}`
+      // 이렇게 만들 필요 없이 location.pathname 으로 url 따올 수 있음
+
+      // 좋아요 눌렀을 때 알림이 가는 함수 호출(type, url, boardNo, content)
+      sendNotification(
+        "boardLike", 
+        location.pathname,    // 게시글 상세 조회 페이지 주소
+        boardDetail.boardNo,
+        content
+      );
+
     } else {
       boardLike.classList.add("fa-regular");
       boardLike.classList.remove("fa-solid");
