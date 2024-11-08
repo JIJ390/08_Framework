@@ -1,9 +1,17 @@
 package edu.kh.api.controller;
 
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,164 +37,134 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j // Logger log 필드 자동 생성(Lombok 제공)
 @PropertySource("classpath:/config.properties")
 public class MainController {
-	
+
 	// 서비스키 얻어오기
 	@Value("${api.serviceKey.encoding}")
 	private String encodingServiceKey;
-	
+
 	// 서버에서 요청 시 decoding 사용!!
 	@Value("${api.serviceKey.decoding}")
 	private String decodingServiceKey;
-	
 
-	
 	@GetMapping("/")
-	public String mainPage(
-			@RequestParam(
-					name="cityName", 
-					required=false, 
-					defaultValue="서울") String cityName,
-			Model model) {
-		
+	public String mainPage(@RequestParam(name = "cityName", required = false, defaultValue = "서울") String cityName,
+			Model model) throws IOException, URISyntaxException, JSONException{
+
 		/* Server(Java) 에서 공공데이터 요청하기 */
+
+		StringBuilder urlBuilder = new StringBuilder(
+				"http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty"); /* URL */
+		urlBuilder.append("?" + URLEncoder.encode("serviceKey", "UTF-8") + "=" + encodingServiceKey); /* Service Key */
+
+		/*
+		 * 시도 이름(전국, 서울, 부산, 대구, 인천, 광주, 대전, 울산, 경기, 강원, 충북, 충남, 전북, 전남, 경북, 경남, 제주, 세종)
+		 */
+		urlBuilder.append("&" + URLEncoder.encode("sidoName", "UTF-8") + "=" + URLEncoder.encode(cityName, "UTF-8"));
+
+		/* xml 또는 json */
+		urlBuilder.append("&" + URLEncoder.encode("returnType", "UTF-8") + "=" + URLEncoder.encode("json", "UTF-8"));
+
+		/* 한 페이지 결과 수 */
+		urlBuilder.append("&" + URLEncoder.encode("numOfRows", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
+
+		/* 페이지번호 */
+		urlBuilder.append("&" + URLEncoder.encode("pageNo", "UTF-8") + "=" + URLEncoder.encode("1", "UTF-8"));
+
+		/* 버전별 상세 결과 참고 */
+		urlBuilder.append("&" + URLEncoder.encode("ver", "UTF-8") + "=" + URLEncoder.encode("1.0", "UTF-8"));
+
 		
-		// 시도별 미세먼지 농도 조회 요청 주소
-		String url = "http://apis.data.go.kr/B552584/ArpltnInforInqireSvc/getCtprvnRltmMesureDnsty";
+		/* 제공 샘플과 다른 부분 */
+		URI uri = new URI(urlBuilder.toString());
+		URL url = uri.toURL();
+
+		HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+		conn.setRequestMethod("GET");
 		
-		// 파라미터 : serviceKey(필드), sidoName(매개변수), 
-		//						returnType, numOfRows, pageNo, ver
-		
-		String returnType = "json";
-		int numOfRows = 1;		
-		int pageNo = 1;		
-		String ver = "1.0";
-		
-		// UriComponentsBuilder
-		// - Spring 에서 제공하는 URI 관련 객체
-		// - 주소 + 쿼리 스트링 조합을 쉽게 할 수 있는 기능 제공
-		// - 자동을 'URL 인코딩' 처리하여 안전하게 요청 가능
-		// * 'URL 인코딩' : 자동으로 URL 사용 가능 형태로 변환
-		UriComponentsBuilder uriBuilder =
-				UriComponentsBuilder.fromHttpUrl(url)
-				.queryParam("serviceKey", "{serviceKey}")
-				.queryParam("sidoName", cityName)
-				.queryParam("returnType", returnType)
-				.queryParam("numOfRows", numOfRows)
-				.queryParam("pageNo", pageNo)
-				.queryParam("ver", ver);
-		
-		// decodingServiceKey 를 그대로 넣으면 추가 구문 존재 시 중복 인코딩 발생
-		// {} 내부는 인코딩 하지 않음!!
-		
-		
-		// --> 자동으로 url + 쿼리스트링이 합쳐진 주소가 생성
-		
-		
-		String uriString = uriBuilder.build().toUriString();
-		log.debug("uriString : {}", uriString);		
-		
-		uriString = uriString.replace("{serviceKey}", decodingServiceKey);
-		log.debug("uriString : {}", uriString);
-		
-		
-		// fetch("주소", {method "POST", headers, body});
-		// 요청 헤더!!
-		HttpHeaders headers = new HttpHeaders();
-		headers.set("Content-Type", "application/json");
-		
-		// HTTP 요청 헤더와 바디를 묶어주는 객체 (fetch API 형태를 보면서 이해)
-		HttpEntity<String> entity = new HttpEntity<>(headers);
-		
-		// RestTemplate
-		// - Spring 제공 HTTP 클라이언트
-		// - Spring 에서 외부로 HTTP 요청을 보내고 응답을 받는 역할의 객체
-		RestTemplate restTemplate = new RestTemplate();
-		
-		try {
-			ResponseEntity<String> response
-				= restTemplate.exchange(
-						uriString,			// 요청 주소 + 쿼리스트링(여기서 한 번 더 URL 인코딩 수행) 
-						HttpMethod.GET,	// GET 방식 요청
-						entity,					// HTTP 헤더, 바디
-						String.class);	// 응답 데이터의 형태
-														// response.text();
-			
-			String responseBody = response.getBody();
-			
-			log.debug("responseBody : {}", responseBody);
-			
-			// Jackson 라이브러리
-			// -> Java 에서 JSON 을 다룰 수 있게 해주는 라이브러리
-			
-			// Jackson data-bind 라이브러리
-			// -> JSON 데이터를 Java 객체(Map,DTO) 로 변환할 수 있는 라이브러리
-			
-			// spring-starter-web dependency 에 Jackson data-bind 포함되어 있음
-			
-			// JSON 을 쉽게 다루거나 변환할 수 있는 객체
-			ObjectMapper objectMapper = new ObjectMapper();
-			
-			JsonNode rootNode = objectMapper.readTree(responseBody);
-			
-			// 상위 노드부터 아래로 세분화
-			// json 데이터 중 items 찾기
-			JsonNode itemNode = rootNode.path("response").path("body").path("items");
-			
-			// 찾은 items 를 List 형태로 변환
-			List<ItemDto> items
-				= objectMapper.readValue(
-						itemNode.toString(), // items JSON 반환 (문자열)
-						new TypeReference<List<ItemDto>>() { /*미완성 메서드 오버라이딩*/ });
-						// items JSON 데이터를 읽어올 때 
-						// <List<ItemDto>> 자료형을 참조해서 형변환
-					
-			log.debug("items.get(0) : {}", items.get(0));
-			
-//			model.addAttribute("item", items.get(0));
-			
-			/* 데이터 가공 */
-			String[] gradeEmoji = {"😄", "🙂", "😷", "🤢"};
-			String[] gradeText  = {"좋음", "보통", "나쁨", "매우나쁨"};
-			
-			ItemDto item = items.get(0);
-			model.addAttribute("pm10Grade", gradeEmoji[item.getPm10Grade() - 1]);
-			model.addAttribute("pm10GradeText", gradeText[item.getPm10Grade() - 1]);
-			model.addAttribute("pm10Value", 
-					String.format("미세먼지 농도 : %s ㎍/㎥", item.getPm10Value()));
-			
-			model.addAttribute("pm25Grade", gradeEmoji[item.getPm25Grade() - 1]);
-			model.addAttribute("pm25GradeText", gradeText[item.getPm25Grade() - 1]);
-			model.addAttribute("pm25Value", 
-					String.format("초미세먼지 농도 : %s ㎍/㎥", item.getPm25Value()));
-			
-		} catch (Exception e) {
-			e.printStackTrace();
+		/* 제공 샘플과 다른 부분 */
+		// - 샘플 코드 수행 시 응답 데이터에서 한글이 깨지는 문제 발생
+		// -> charset=UTF-8 을 추가하여 응답 데이터의 문자 인코딩을 UTF-8 로 지정
+		// --> 한글 깨짐 해결
+		conn.setRequestProperty("Content-type", "application/json; charset=UTF-8");
+		System.out.println("Response code: " + conn.getResponseCode());
+		BufferedReader rd;
+		if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+			rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+		} else {
+			rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
 		}
-		
-		// classpath:/templates/main.html -> forward 
+		StringBuilder sb = new StringBuilder();
+		String line;
+		while ((line = rd.readLine()) != null) {
+			sb.append(line);
+		}
+		rd.close();
+		conn.disconnect();
+
+		// 응답 받은 데이터(JSON)를 로그에 출력
+		String response = sb.toString();
+		log.debug(response);
+
+		// Jackson 라이브러리
+		// -> Java 에서 JSON 을 다룰 수 있게 해주는 라이브러리
+
+		// Jackson data-bind 라이브러리
+		// -> JSON 데이터를 Java 객체(Map,DTO) 로 변환할 수 있는 라이브러리
+
+		// spring-starter-web dependency 에 Jackson data-bind 포함되어 있음
+
+		// JSON 을 쉽게 다루거나 변환할 수 있는 객체
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		JsonNode rootNode = objectMapper.readTree(response);
+
+		// 상위 노드부터 아래로 세분화
+		// json 데이터 중 items 찾기
+		JsonNode itemNode = rootNode.path("response").path("body").path("items");
+
+		// 찾은 items 를 List 형태로 변환
+		List<ItemDto> items = objectMapper.readValue(itemNode.toString(), // items JSON 반환 (문자열)
+				new TypeReference<List<ItemDto>>() {
+					/* 미완성 메서드 오버라이딩 */ });
+		// items JSON 데이터를 읽어올 때
+		// <List<ItemDto>> 자료형을 참조해서 형변환
+
+		log.debug("items.get(0) : {}", items.get(0));
+
+//			model.addAttribute("item", items.get(0));
+
+		/* 데이터 가공 */
+		String[] gradeEmoji = { "😄", "🙂", "😷", "🤢" };
+		String[] gradeText = { "좋음", "보통", "나쁨", "매우나쁨" };
+
+		ItemDto item = items.get(0);
+		model.addAttribute("pm10Grade", gradeEmoji[item.getPm10Grade() - 1]);
+		model.addAttribute("pm10GradeText", gradeText[item.getPm10Grade() - 1]);
+		model.addAttribute("pm10Value", String.format("미세먼지 농도 : %s ㎍/㎥", item.getPm10Value()));
+
+		model.addAttribute("pm25Grade", gradeEmoji[item.getPm25Grade() - 1]);
+		model.addAttribute("pm25GradeText", gradeText[item.getPm25Grade() - 1]);
+		model.addAttribute("pm25Value", String.format("초미세먼지 농도 : %s ㎍/㎥", item.getPm25Value()));
+
+		// classpath:/templates/main.html -> forward
 		// -> 해석된 HTML 코드가 클라이언트에게 전달(응답)
 		return "main";
 	}
-	
-	
-	
-	
-	/* ResponseEntity : @ResponseBody + 응답 상태 코드
+
+	/*
+	 * ResponseEntity : @ResponseBody + 응답 상태 코드
 	 * 
-	 * - HTTP 응답을 표현할 수 있는 객체
-	 * - 비동기 응답 서비스(RESTful API)에서 유용하게 사용
+	 * - HTTP 응답을 표현할 수 있는 객체 - 비동기 응답 서비스(RESTful API)에서 유용하게 사용
 	 */
 	@PostMapping("getServiceKey")
-	public ResponseEntity<?> getServiceKey(){
-		
+	public ResponseEntity<?> getServiceKey() {
+
 		try {
 			return new ResponseEntity<String>(encodingServiceKey, HttpStatus.OK);
-		
-		}catch(Exception e) {
+
+		} catch (Exception e) {
 			return new ResponseEntity<String>("에러", HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
-	
+
 }
